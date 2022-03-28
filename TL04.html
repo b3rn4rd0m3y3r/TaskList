@@ -1,0 +1,80 @@
+<html>
+	<head>
+		<title>TL04</title>
+		<meta charset="iso-8859-1"/>
+		<meta name="author" content="Bernardo Meyer">
+		<meta name="description" content="Botão addItem com previsão de addNo. Click para marcar nó corrente.">
+		<meta name="keywords" content="sites, web, desenvolvimento, jscript, javascript">
+		<style>
+			BODY {font-family: Verdana; }
+			DIV.Raiz { 
+				border: solid 1px gray; 
+				border-radius: 4px;
+				height: 20px;
+				margin-bottom: 0px;
+				margin-top: 8px;
+				width: 60px;
+				}
+			UL#Raiz {margin: 0px; padding: 0px;}
+			UL#Raiz > LI {margin-top: 6px; margin-left: 20px;}
+		</style>
+		<script src="BMyFrmwk.js">
+		</script>
+		<script>
+			var NO_ATUAL = null;
+			var NO_EFET = null;
+			var ob = null;
+			// Função chamada no evento onload do corpo do HTML
+			function addNo(){
+				alert('addNo');
+				}
+			function addItem(){
+				// ETAPA 1
+				// Traz o campo de INPUT que contém o nome de um nodo HTML
+				NO_ATUAL = ob.getById("noAtual");
+				// Traz o valor do campo de INPUT que contém o nome de um nodo HTML
+				var noEfet = NO_ATUAL.value;
+				// Traz o nodo HTML
+				NO_EFET = ob.getById(noEfet)
+				// Traz a tag do nodo HTML, para não enganarmos na operação de acréscimo
+				// alert(NO_EFET.tagName+" "+noEfet);
+				// ETAPA 2
+				// Conferimos se estamos em uma tag UL, para acrescentarmos um LI
+				if( NO_EFET.tagName == "UL" ){
+					var liAcresc = document.createElement("LI");
+					var nome = ob.getById("nomItem");
+					liAcresc.innerText =nome.value;
+					NO_EFET.appendChild(liAcresc);
+					}
+				if( NO_EFET.tagName == "LI" ){
+					addNo();
+					}
+				// TODO: (1) Dar um nome para o item (OK)
+				//               (2) Dar um nome correto para o ID do nó
+				}
+			function mark(ev){
+				var o = ev.target;
+				console.log(o);
+				o.style.color = "red";
+				}
+			function init(){
+				ob = new BMy();
+				//console.log(ob.isNumeric("12345"));
+				
+				}
+		</script>
+	</head>
+	<body onload="init();">
+		<h1>LISTA DE TAREFAS</h1>
+		<!-- Barra de ferramentas -->
+		<input id="AcrNo" name="AcrNo" type="button" value="Acresc.nó" onclick="addNo();">&nbsp;
+		<label>Nome novo ITEM:</label><input id="nomItem" name="nomItem" value="New item">
+		<input id="AcrItem" name="AcrItem" type="button" value="Acresc.Item" onclick="addItem();">
+		<label>Nó atual:</label><input id="noAtual" name="noAtual" value="Raiz">
+		<!-- ********* Lista de tarefas ********* -->
+		<div class="Raiz">&nbsp;Raiz&nbsp;</div>
+		<ul id="Raiz" onclick="mark(event);">
+		
+		</ul>
+	</body>
+</html>

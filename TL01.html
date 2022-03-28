@@ -1,0 +1,47 @@
+<html>
+	<head>
+		<title>TL01</title>
+		<meta charset="iso-8859-1"/>
+		<meta name="author" content="Bernardo Meyer">
+		<meta name="description" content="Lista de tarefas. Botoes primarios.">
+		<meta name="keywords" content="sites, web, desenvolvimento, jscript, javascript">
+		<style>
+			BODY {font-family: Verdana; }
+			DIV.Raiz { 
+				border: solid 1px gray; 
+				border-radius: 4px;
+				height: 20px;
+				margin-bottom: 4px;
+				margin-top: 8px;
+				width: 60px;
+				}
+		</style>
+		<script src="BMyFrmwk.js">
+		</script>
+		<script>
+			// Função chamada no evento onload do corpo do HTML
+			function addNo(){
+				alert('addNo');
+				}
+			function addItem(){
+				alert('addItem');
+				}
+			function init(){
+				var ob = new BMy();
+				//console.log(ob.isNumeric("12345"));
+				}
+		</script>
+	</head>
+	<body onload="init();">
+		<h1>LISTA DE TAREFAS</h1>
+		<!-- Barra de ferramentas -->
+		<input id="AcrNo" name="AcrNo" type="button" value="Acresc.nó" onclick="addNo();">&nbsp;
+		<input id="AcrItem" name="AcrItem" type="button" value="Acresc.Item" onclick="addItem();">
+		<label>Nó atual:</label><input id="noAtual" name="noAtual" value="Raiz">
+		<!-- ********* Lista de tarefas ********* -->
+		<div class="Raiz">&nbsp;Raiz&nbsp;</div>&nbsp;&nbsp;&nbsp;
+		<ul id="Raiz">
+		
+		</ul>
+	</body>
+</html>
