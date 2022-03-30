@@ -1,0 +1,139 @@
+<html>
+	<head>
+		<title>TL06</title>
+		<meta charset="iso-8859-1"/>
+		<meta name="author" content="Bernardo Meyer">
+		<meta name="description" content="Click para marcar nó corrente. Show/hide de grupo UL.">
+		<meta name="keywords" content="sites, web, desenvolvimento, jscript, javascript">
+		<style>
+			BODY {font-family: Verdana; }
+			DIV.Raiz { 
+				border: solid 1px gray; 
+				border-radius: 4px;
+				height: 20px;
+				margin-bottom: 0px;
+				margin-top: 8px;
+				width: 60px;
+				}
+			LI {
+				font-size: 16px;
+				margin-bottom: 2px;
+				margin-left: 20px;
+				}
+			SPAN.no {
+				border: 1px solid crimson; 
+				border-radius: 3px;
+				padding-left: 2px;
+				padding-right: 2px;
+				}
+			UL {
+				font-size: 18px;
+				margin-bottom: 2px;
+				}
+			UL#Raiz {
+				margin: 0px; 
+				padding: 0px;
+				}
+			UL#Raiz > LI {
+				margin-top: 6px; 
+				}
+
+		</style>
+		<script src="BMyFrmwk.js">
+		</script>
+		<script>
+			var NO_ATUAL = null;
+			var NO_EFET = null;
+			var ob = null;
+			// NOVO - Mostra/oculta um grupo UL
+			function mostra(nome){
+				var noUL = (ob.getByQry("UL#"+nome))[0];
+				var noIMG = (ob.getByQry("IMG#"+nome))[0];
+				var nomeIMG = noIMG.getAttribute("src");
+				var mostrar = null;
+				// Troca a figura e detecta a ação a tomar
+				if( nomeIMG == "open.jpg" ){
+					mostrar = "none";
+					nomeIMG = "close.jpg";
+					} else {
+					mostrar = "block";
+					nomeIMG = "open.jpg";
+					}
+				noIMG.setAttribute("src", nomeIMG);
+				noUL.style.display = mostrar;
+				return;
+				}
+			// Função chamada no evento onload do corpo do HTML
+			function addNo(){
+					var noEfet = (ob.getById("noAtual")).value;
+					// NOVO
+					NO_EFET = (ob.getByQry("LI#"+noEfet))[0];
+					if( NO_EFET.tagName == "SPAN" ){
+						console.log("É SPAN");
+						NO_EFET = (ob.getByQry("UL#"+noEfet))[0];
+						}
+					// Cria novo nó (UL)
+					var ulAcresc = document.createElement("UL");
+					var nomeUL = noEfet+"u"+(ob.getByQry('UL[id^=Raiz]').length +1);
+					ulAcresc.id = nomeUL;
+					var nome = ob.getById("nomItem");
+					// NOVO - Tratamento de abertura/fechamento de UL
+					NO_EFET.innerHTML = "<img id=\""+nomeUL+"\"src=\"open.jpg\" onclick=\"mostra('"+nomeUL+"')\"><span class=\"no\" id=\"" + nomeUL + "\">"+nome.value+"</span>";
+					//ulAcresc.innerHTML = "<img id=\""+nomeUL+"\"src=\"open.jpg\" onclick=\"mostra('"+nomeUL+"')\"><span class=\"no\" id=\"" + nomeUL + "\">"+nome.value+"</span>";
+					NO_EFET.appendChild(ulAcresc);	
+				}
+			function addItem(){
+				// ETAPA 1
+				// Traz o campo de INPUT que contém o nome de um nodo HTML
+				NO_ATUAL = ob.getById("noAtual");
+				// Traz o valor do campo de INPUT que contém o nome de um nodo HTML
+				var noEfet = NO_ATUAL.value;
+				// NOVO - Traz o nodo HTML do tipo UL
+				NO_EFET = (ob.getByQry("UL#"+noEfet))[0];
+				//NO_EFET = ob.getById(noEfet);
+				// Traz a tag do nodo HTML, para não enganarmos na operação de acréscimo
+				// alert(NO_EFET.tagName+" "+noEfet);
+				// ETAPA 2
+				// Conferimos se estamos em uma tag UL, para acrescentarmos um LI
+				if( NO_EFET.tagName == "UL" || NO_EFET.tagName == "SPAN" ){
+				//if( NO_EFET.tagName == "SPAN" ){
+					var liAcresc = document.createElement("LI");
+					var nome = ob.getById("nomItem");
+					liAcresc.innerText =nome.value;
+					liAcresc.id = noEfet +"c"+(ob.getByQry('LI[id^=Raiz]').length +1);
+					NO_EFET.appendChild(liAcresc);
+					}
+				if( NO_EFET.tagName == "LI" ){
+					addNo(NO_EFET);
+					}
+				// TODO: (1) Dar um nome para o item (OK)
+				//               (2) Dar um nome correto para o ID do nó
+				}
+			function mark(ev){
+				var o = ev.target;
+				console.log(o+" "+o.DOCUMENT_NODE);
+				o.style.color = "red";
+				// NOVO - Detecta o Id do elemento clicado
+				NO_ATUAL = ob.getById("noAtual");
+				NO_ATUAL.value = o.id;
+				}
+			function init(){
+				ob = new BMy();
+				//console.log(ob.isNumeric("12345"));
+				}
+		</script>
+	</head>
+	<body onload="init();">
+		<h1>LISTA DE TAREFAS</h1>
+		<!-- Barra de ferramentas -->
+		<input id="AcrNo" name="AcrNo" type="button" value="Acresc.nó" onclick="addNo();">&nbsp;
+		<label>Nome novo ITEM:</label><input id="nomItem" name="nomItem" value="New item">
+		<input id="AcrItem" name="AcrItem" type="button" value="Acresc.Item" onclick="addItem();">
+		<label>Nó atual:</label><input id="noAtual" name="noAtual" value="Raiz">
+		<!-- ********* Lista de tarefas ********* -->
+		<div class="Raiz">&nbsp;Raiz&nbsp;</div>
+		<ul id="Raiz" onclick="mark(event);">
+		
+		</ul>
+	</body>
+</html>
