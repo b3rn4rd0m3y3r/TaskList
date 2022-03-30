@@ -1,6 +1,6 @@
 <html>
 	<head>
-		<title>TL04</title>
+		<title>TL05</title>
 		<meta charset="iso-8859-1"/>
 		<meta name="author" content="Bernardo Meyer">
 		<meta name="description" content="Botão addItem com previsão de addNo. Click para marcar nó corrente.">
@@ -25,13 +25,21 @@
 			var NO_EFET = null;
 			var ob = null;
 			// Função chamada no evento onload do corpo do HTML
-			function addNo(nofet){
-				//alert('addNo');
-				
+			function addNo(){
+					// NOVO - Identifica o nó clicado
+					var noEfet = (ob.getById("noAtual")).value;
+					NO_EFET = ob.getById(noEfet);
+					if( NO_EFET.tagName == "SPAN" ){
+						console.log("É SPAN");
+						NO_EFET = ob.getByQry("UL#"+noEfet);
+						}
+					// Cria novo nó (UL)
 					var ulAcresc = document.createElement("UL");
+					var nomeUL = noEfet+"u"+(ob.getByQry('UL[id^=Raiz]').length +1);
+					ulAcresc.id = nomeUL;
 					var nome = ob.getById("nomItem");
-					ulAcresc.innerHTML = "<span>"+nome.value+"</span>";
-					nofet.appendChild(ulAcresc);	
+					ulAcresc.innerHTML = "<span id=\"" + nomeUL + "\">"+nome.value+"</span>";
+					NO_EFET.appendChild(ulAcresc);	
 					//var liAcresc = document.createElement("LI");
 					//ulAcres.appendChild(ulAcresc);
 
@@ -43,7 +51,7 @@
 				// Traz o valor do campo de INPUT que contém o nome de um nodo HTML
 				var noEfet = NO_ATUAL.value;
 				// Traz o nodo HTML
-				NO_EFET = ob.getById(noEfet)
+				NO_EFET = ob.getById(noEfet);
 				// Traz a tag do nodo HTML, para não enganarmos na operação de acréscimo
 				// alert(NO_EFET.tagName+" "+noEfet);
 				// ETAPA 2
@@ -52,6 +60,8 @@
 					var liAcresc = document.createElement("LI");
 					var nome = ob.getById("nomItem");
 					liAcresc.innerText =nome.value;
+					// NOVO - Produz o Id do elemento clicado, baseado no número de LIs
+					liAcresc.id = noEfet +"c"+(ob.getByQry('LI[id^=Raiz]').length +1);
 					NO_EFET.appendChild(liAcresc);
 					}
 				if( NO_EFET.tagName == "LI" ){
@@ -62,8 +72,11 @@
 				}
 			function mark(ev){
 				var o = ev.target;
-				console.log(o);
+				console.log(o+" "+o.DOCUMENT_NODE);
 				o.style.color = "red";
+				// NOVO - Detecta o Id do elemento clicado
+				NO_ATUAL = ob.getById("noAtual");
+				NO_ATUAL.value = o.id;
 				}
 			function init(){
 				ob = new BMy();
