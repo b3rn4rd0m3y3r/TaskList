@@ -3,7 +3,7 @@
 		<title>TL06</title>
 		<meta charset="iso-8859-1"/>
 		<meta name="author" content="Bernardo Meyer">
-		<meta name="description" content="Click para marcar nó corrente. Show/hide de grupo UL.">
+		<meta name="description" content="Marcar nó corrente com cor vermelha e nó anterior com um tom de azul claro.">
 		<meta name="keywords" content="sites, web, desenvolvimento, jscript, javascript">
 		<style>
 			BODY {font-family: Verdana; }
@@ -44,8 +44,10 @@
 		<script>
 			var NO_ATUAL = null;
 			var NO_EFET = null;
+			// NOVO
+			var NO_ant = null;
 			var ob = null;
-			// NOVO - Mostra/oculta um grupo UL
+			// Mostra/oculta um grupo UL
 			function mostra(nome){
 				var noUL = (ob.getByQry("UL#"+nome))[0];
 				var noIMG = (ob.getByQry("IMG#"+nome))[0];
@@ -66,7 +68,6 @@
 			// Acrescenta um nó - O item corrente está no input "NÓ ATUAL"
 			function addNo(){
 					var noEfet = (ob.getById("noAtual")).value;
-					// NOVO
 					NO_EFET = (ob.getByQry("LI#"+noEfet))[0];
 					if( NO_EFET == null ){
 						alert('Este nó deve ser alimentado com itens. Utilize o botão "Acresc.Item".');
@@ -80,7 +81,7 @@
 						var nomeUL = noEfet+"u"+(ob.getByQry('UL[id^=Raiz]').length +1);
 						ulAcresc.id = nomeUL;
 						var nome = ob.getById("nomItem");
-						// NOVO - Tratamento de abertura/fechamento de UL
+						// Tratamento de abertura/fechamento de UL
 						NO_EFET.innerHTML = "<img id=\""+nomeUL+"\"src=\"open.jpg\" onclick=\"mostra('"+nomeUL+"')\"><span class=\"no\" id=\"" + nomeUL + "\">"+nome.value+"</span>";
 						NO_EFET.appendChild(ulAcresc);
 						}					
@@ -92,7 +93,7 @@
 				NO_ATUAL = ob.getById("noAtual");
 				// Traz o valor do campo de INPUT que contém o nome de um nodo HTML
 				var noEfet = NO_ATUAL.value;
-				// NOVO - Traz o nodo HTML do tipo UL
+				// Traz o nodo HTML do tipo UL
 				NO_EFET = (ob.getByQry("UL#"+noEfet))[0];
 				//NO_EFET = ob.getById(noEfet);
 				// Traz a tag do nodo HTML, para não enganarmos na operação de acréscimo
@@ -117,9 +118,15 @@
 				var o = ev.target;
 				console.log(o+" "+o.DOCUMENT_NODE);
 				o.style.color = "red";
-				// NOVO - Detecta o Id do elemento clicado
+				// Detecta o Id do elemento clicado
 				NO_ATUAL = ob.getById("noAtual");
+				// NOVO - Descolorificação do nó anteriormente marcado
+				if( NO_ant != null ){
+					var noAnt = ob.getById(NO_ant);
+					noAnt.style.color = "teal";
+					}
 				NO_ATUAL.value = o.id;
+				NO_ant = NO_ATUAL.value;
 				}
 			function init(){
 				ob = new BMy();
