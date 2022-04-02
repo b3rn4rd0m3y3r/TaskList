@@ -3,7 +3,7 @@
 		<title>TL05</title>
 		<meta charset="iso-8859-1"/>
 		<meta name="author" content="Bernardo Meyer">
-		<meta name="description" content="Botão addItem com previsão de addNo. Click para marcar nó corrente.">
+		<meta name="description" content="Dando um id único e hierárquico para os itens.">
 		<meta name="keywords" content="sites, web, desenvolvimento, jscript, javascript">
 		<style>
 			BODY {font-family: Verdana; }
@@ -15,29 +15,8 @@
 				margin-top: 8px;
 				width: 60px;
 				}
-			LI {
-				font-size: 16px;
-				margin-bottom: 2px;
-				margin-left: 20px;
-				}
-			SPAN.no {
-				border: 1px solid crimson; 
-				border-radius: 3px;
-				padding-left: 2px;
-				padding-right: 2px;
-				}
-			UL {
-				font-size: 18px;
-				margin-bottom: 2px;
-				}
-			UL#Raiz {
-				margin: 0px; 
-				padding: 0px;
-				}
-			UL#Raiz > LI {
-				margin-top: 6px; 
-				}
-
+			UL#Raiz {margin: 0px; padding: 0px;}
+			UL#Raiz > LI {margin-top: 6px; margin-left: 20px;}
 		</style>
 		<script src="BMyFrmwk.js">
 		</script>
@@ -59,8 +38,11 @@
 					var nomeUL = noEfet+"u"+(ob.getByQry('UL[id^=Raiz]').length +1);
 					ulAcresc.id = nomeUL;
 					var nome = ob.getById("nomItem");
-					ulAcresc.innerHTML = "<span class=\"no\" id=\"" + nomeUL + "\">"+nome.value+"</span>";
+					ulAcresc.innerHTML = "<span id=\"" + nomeUL + "\">"+nome.value+"</span>";
 					NO_EFET.appendChild(ulAcresc);	
+					//var liAcresc = document.createElement("LI");
+					//ulAcres.appendChild(ulAcresc);
+
 				}
 			function addItem(){
 				// ETAPA 1
