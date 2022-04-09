@@ -1,6 +1,6 @@
 <html>
 	<head>
-		<title>TL06</title>
+		<title>TL07</title>
 		<meta charset="iso-8859-1"/>
 		<meta name="author" content="Bernardo Meyer">
 		<meta name="description" content="Marcar nó corrente com cor vermelha e nó anterior com um tom de azul claro.">
@@ -10,10 +10,14 @@
 			DIV.Raiz { 
 				border: solid 1px gray; 
 				border-radius: 4px;
+				color: #008040;
 				height: 20px;
 				margin-bottom: 0px;
 				margin-top: 8px;
 				width: 60px;
+				}
+			H1 {
+				color:teal;
 				}
 			LI {
 				font-size: 16px;
@@ -31,6 +35,7 @@
 				margin-bottom: 2px;
 				}
 			UL#Raiz {
+				
 				margin: 0px; 
 				padding: 0px;
 				}
@@ -114,19 +119,26 @@
 				// TODO: (1) Dar um nome para o item (OK)
 				//               (2) Dar um nome correto para o ID do nó
 				}
+			// Marca um nó, se for LI ou SPAN
 			function mark(ev){
 				var o = ev.target;
+				var nome = null;
 				console.log(o+" "+o.DOCUMENT_NODE);
-				o.style.color = "red";
-				// Detecta o Id do elemento clicado
-				NO_ATUAL = ob.getById("noAtual");
-				// NOVO - Descolorificação do nó anteriormente marcado
-				if( NO_ant != null ){
-					var noAnt = ob.getById(NO_ant);
-					noAnt.style.color = "teal";
+				if( o.tagName == "SPAN" || o.tagName == "LI" ){
+					o.style.color = "red";
+					// Detecta o Id do elemento clicado
+					NO_ATUAL = ob.getById("noAtual");
+					// NOVO - Descolorificação do nó anteriormente marcado
+					if( NO_ant != null ){
+						var noAnt = ob.getById(NO_ant);
+						noAnt.style.color = "teal";
+						}
+					NO_ATUAL.value = o.id;
+					NO_ant = NO_ATUAL.value;
+					// NOVO - Seja LI, seja SPAN, o innerText contém o label do nó (seu nome)
+					nome = o.innerText; 
+					(ob.getById("noNome")).value = nome;
 					}
-				NO_ATUAL.value = o.id;
-				NO_ant = NO_ATUAL.value;
 				}
 			function init(){
 				ob = new BMy();
@@ -138,9 +150,10 @@
 		<h1>LISTA DE TAREFAS</h1>
 		<!-- Barra de ferramentas -->
 		<input id="AcrNo" name="AcrNo" type="button" value="Acresc.nó" onclick="addNo();">&nbsp;
-		<label>Nome novo ITEM:</label><input id="nomItem" name="nomItem" value="New item">
+		<label>Nome novo ITEM:</label><input id="nomItem" name="nomItem" value="Item" size=8>
 		<input id="AcrItem" name="AcrItem" type="button" value="Acresc.Item" onclick="addItem();">
-		<label>Nó atual:</label><input id="noAtual" name="noAtual" value="Raiz">
+		<label>Nó atual:</label><input id="noAtual" name="noAtual" value="Raiz" size=8>
+		<label>Nome:</label><input id="noNome" name="noNome" value="Raiz" size=8>
 		<!-- ********* Lista de tarefas ********* -->
 		<div class="Raiz">&nbsp;Raiz&nbsp;</div>
 		<ul id="Raiz" onclick="mark(event);">
