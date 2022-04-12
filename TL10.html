@@ -19,6 +19,14 @@
 			H1 {
 				color:teal;
 				}
+			INPUT#noAtual {
+				font-size:10;
+				}
+			INPUT[type=button] {
+				background: teal;
+				border-radius: 6px;
+				color: white;
+				}
 			LI {
 				font-size: 16px;
 				margin-bottom: 2px;
@@ -92,9 +100,10 @@
 						NO_ATUAL.value = nomeUL;
 						NO_ant = NO_ATUAL.value;
 						
-						var nome = ob.getById("nomItem");
+						//var nome = ob.getById("nomItem");
+						var nome = ob.getById("noNome").value;
 						// Tratamento de abertura/fechamento de UL
-						NO_EFET.innerHTML = "<img id=\""+nomeUL+"\"src=\"open.jpg\" onclick=\"mostra('"+nomeUL+"')\"><span class=\"no\" id=\"" + nomeUL + "\">"+nome.value+"</span>";
+						NO_EFET.innerHTML = "<img id=\""+nomeUL+"\"src=\"open.jpg\" onclick=\"mostra('"+nomeUL+"')\"><span class=\"no\" id=\"" + nomeUL + "\">"+nome+"</span>";
 						NO_EFET.appendChild(ulAcresc);
 						}					
 				}
