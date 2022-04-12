@@ -135,7 +135,8 @@
 			function mark(ev){
 				var o = ev.target;
 				// Refresca o nome do nó atual nos campos
-				// de INPUT
+				// de INPUT, pois serão referência para as
+				// operações posteriores.
 				NO_ATUAL.value = o.id;
 				if( o.id != 'Raiz' ){
 					(ob.getById("noNome")).value = o.innerText;
@@ -144,9 +145,8 @@
 					}
 				var nome = null;
 				console.log(o+" "+o.DOCUMENT_NODE);
+				// Testa o clique no SPAN e LI
 				if( o.tagName == "SPAN" || o.tagName == "LI" ){
-					// Passa esta linha para o final da condição
-					//o.style.color = "red";
 					// Detecta o Id do elemento clicado
 					NO_ATUAL = ob.getById("noAtual");
 					// Descolorificação do nó anteriormente marcado
@@ -158,6 +158,7 @@
 					if( ob.getByQry("LI#"+NO_ant)[0] != null ){
 						pref = "LI";
 						}
+					// Na primeira vez, não existe nó anterior
 					if( NO_ant != null ){
 						var noAnt = ob.getByQry(pref+"#"+NO_ant)[0];
 						// Como o nó anterior pode ter sido deletado por delItem(),
@@ -166,13 +167,13 @@
 							noAnt.style.color = "teal";
 							}
 						}
-					NO_ATUAL.value = o.id;
+					//NO_ATUAL.value = o.id;
 					NO_ant = NO_ATUAL.value;
 					// Seja LI, seja SPAN, o innerText contém o label do nó (seu nome)
 					nome = o.innerText; 
 					(ob.getById("noNome")).value = nome;
 					o.style.color = "red";
-					// TODO - Buscar a nota do nó clicado (CASEXISTA)
+					// Buscar a anotação do nó clicado (CASEXISTA)
 					var oTxt = ob.getById("txtContainer");
 					var id = NO_ATUAL.value;
 					var txt = (ob.getById("tMain")).value;
