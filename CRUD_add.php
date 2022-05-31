@@ -3,4 +3,5 @@
 	$Html = $_GET["Html"];
 	$Arvore = $_GET["Arvore"];
 	echo $Arvore;
+	echo $Html;
 ?>

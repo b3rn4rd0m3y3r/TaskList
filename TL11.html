@@ -137,8 +137,6 @@
 					} else {
 					console.log("Não existe um Nó atual. Selecione um nó pai.");
 					}
-				// TODO: (1) Dar um nome para o item (OK)
-				//               (2) Dar um nome correto para o ID do nó
 				}
 			// Marca um nó, se for LI ou SPAN
 			function mark(ev){
@@ -225,11 +223,10 @@
 					alert("Nó ainda não tem definição de sublista (UL). Acrescente um nó.");
 					}
 				}
-			// NOVO
 			function markDiv(){
 				ob.getById("Raiz").click();
 				}
-			// NOVO
+
 			function saveTxt(){
 				var oTxt = ob.getById("txtContainer");
 				var id = NO_ATUAL.value;
@@ -243,7 +240,11 @@
 				if( NO_TXT == null ){
 					obTxt = document.createElement("TEXTAREA");
 					obTxt.id = idTxt;
-					obTxt.value = txt;
+					//obTxt.value = txt; // RETIRADO
+					// NOVO
+					var noTexto = document.createTextNode(txt);
+					obTxt.appendChild(noTexto);
+					obTxt.setAttribute("contenteditable","true");
 					oTxt.appendChild(obTxt);
 					} else {
 					NO_TXT.value = txt;
