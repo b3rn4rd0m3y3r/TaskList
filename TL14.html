@@ -1,0 +1,367 @@
+<html>
+	<head>
+		<title>TL14</title>
+		<meta charset="iso-8859-1"/>
+		<meta name="author" content="Bernardo Meyer">
+		<meta name="description" content="Inclusão do botão e rotina de load da árvore.">
+		<meta name="keywords" content="sites, web, desenvolvimento, jscript, javascript">
+		<style>
+			BODY {font-family: Verdana; }
+			DIV.Raiz { 
+				border: solid 1px gray; 
+				border-radius: 4px;
+				color: #008040;
+				height: 20px;
+				margin-bottom: 0px;
+				margin-top: 8px;
+				width: 60px;
+				}
+			H1 {
+				color:teal;
+				}
+			INPUT#noAtual {
+				font-size:10;
+				}
+			INPUT[type=button] {
+				background: teal;
+				border-radius: 6px;
+				color: white;
+				}
+			LI {
+				font-size: 16px;
+				margin-bottom: 2px;
+				margin-left: 20px;
+				}
+			SPAN.no {
+				border: 1px solid crimson; 
+				border-radius: 3px;
+				padding-left: 2px;
+				padding-right: 2px;
+				}
+			UL {
+				font-size: 18px;
+				margin-bottom: 2px;
+				}
+			/* Novo estilo */
+			UL#Raiz, UL#Raiz LI UL, UL#Raiz LI UL LI UL {
+				list-style-type: none;
+				margin: 0px; 
+				padding: 0px;
+				}
+			UL#Raiz > LI {
+				margin-top: 6px; 
+				}
+
+		</style>
+		<script src="BMyFrmwk.js">
+		</script>
+		<script>
+			// Nó atual
+			var NO_ATUAL = null;
+			// Nó efetivo, ou seja, tradução de um Id em Id de LI (LI#<Id>)
+			var NO_EFET = null;
+			// Nó anterior
+			var NO_ant = null;
+			var ob = null;
+			// Header ISO
+			var headerISO = 'application/x-www-form-urlencoded; charset=iso-8859-1';
+			// Mostra/oculta um grupo UL
+			function mostra(nome){
+				var noUL = (ob.getByQry("UL#"+nome))[0];
+				var noIMG = (ob.getByQry("IMG#"+nome))[0];
+				var nomeIMG = noIMG.getAttribute("src");
+				var mostrar = null;
+				// Troca a figura e detecta a ação a tomar
+				if( nomeIMG == "open.jpg" ){
+					mostrar = "none";
+					nomeIMG = "close.jpg";
+					} else {
+					mostrar = "block";
+					nomeIMG = "open.jpg";
+					}
+				noIMG.setAttribute("src", nomeIMG);
+				noUL.style.display = mostrar;
+				return;
+				}
+			// Acrescenta um nó - O item corrente está no input "NÓ ATUAL"
+			function addNo(){
+					var noEfet = (ob.getById("noAtual")).value;
+					NO_EFET = (ob.getByQry("LI#"+noEfet))[0];
+					if( NO_EFET == null ){
+						alert('Este nó deve ser alimentado com itens. Utilize o botão "Acresc.Item".');
+						} else {
+						if( NO_EFET.tagName == "SPAN" ){
+							console.log("É SPAN");
+							NO_EFET = (ob.getByQry("UL#"+noEfet))[0];
+							}
+						// Cria novo nó (UL)
+						var ulAcresc = document.createElement("UL");
+						var nomeUL = noEfet+"u"+(ob.getByQry('UL[id^=Raiz]').length +1);
+						ulAcresc.id = nomeUL;
+						// Marcar este nó como o anterior. Ele era do tipo LI, e agora se tornou do tipo UL.
+						NO_ATUAL.value = nomeUL;
+						NO_ant = NO_ATUAL.value;
+						
+						//var nome = ob.getById("nomItem");
+						var nome = ob.getById("noNome").value;
+						// Tratamento de abertura/fechamento de UL
+						NO_EFET.innerHTML = "<img id=\""+nomeUL+"\"src=\"open.jpg\" onclick=\"mostra('"+nomeUL+"')\"><span class=\"no\" id=\"" + nomeUL + "\">"+nome+"</span>";
+						NO_EFET.appendChild(ulAcresc);
+						}					
+				}
+			// Acrescenta itens - O nó de apoio está no input "NÓ ATUAL"
+			function addItem(){
+				// ETAPA 1
+				// Traz o campo de INPUT que contém o nome de um nodo HTML
+				NO_ATUAL = ob.getById("noAtual");
+				// Traz o valor do campo de INPUT que contém o nome de um nodo HTML
+				var noEfet = NO_ATUAL.value;
+				if( noEfet != "" ){
+					// Traz o nodo HTML do tipo UL
+					NO_EFET = (ob.getByQry("UL#"+noEfet))[0];
+					//NO_EFET = ob.getById(noEfet);
+					// Traz a tag do nodo HTML, para não enganarmos na operação de acréscimo
+					// alert(NO_EFET.tagName+" "+noEfet);
+					// ETAPA 2
+					// Conferimos se estamos em uma tag UL, para acrescentarmos um LI
+					if( NO_EFET.tagName == "UL" || NO_EFET.tagName == "SPAN" ){
+					//if( NO_EFET.tagName == "SPAN" ){
+						var liAcresc = document.createElement("LI");
+						var nome = ob.getById("nomItem");
+						liAcresc.innerText =nome.value;
+						liAcresc.style.color = "black";
+						liAcresc.id = noEfet +"c"+(ob.getByQry('LI[id^=Raiz]').length +1);
+						NO_EFET.appendChild(liAcresc);
+						}
+					if( NO_EFET.tagName == "LI" ){
+						addNo(NO_EFET);
+						}
+					} else {
+					console.log("Não existe um Nó atual. Selecione um nó pai.");
+					}
+				}
+			// Marca um nó, se for LI ou SPAN
+			function mark(ev){
+				var o = ev.target;
+				// Refresca o nome do nó atual nos campos
+				// de INPUT, pois serão referência para as
+				// operações posteriores.
+				NO_ATUAL.value = o.id;
+				if( o.id != 'Raiz' ){
+					(ob.getById("noNome")).value = o.innerText;
+					} else {
+					(ob.getById("noNome")).value = "Raiz";
+					}
+				var nome = null;
+				console.log(o+" "+o.DOCUMENT_NODE);
+				// Testa o clique no SPAN e LI
+				if( o.tagName == "SPAN" || o.tagName == "LI" ){
+					// Detecta o Id do elemento clicado
+					NO_ATUAL = ob.getById("noAtual");
+					// Descolorificação do nó anteriormente marcado
+					var id = o.id;
+					var pref = null;
+					if( ob.getByQry("UL#"+NO_ant)[0] != null ){
+						pref = "SPAN";
+						}
+					if( ob.getByQry("LI#"+NO_ant)[0] != null ){
+						pref = "LI";
+						}
+					// Na primeira vez, não existe nó anterior
+					if( NO_ant != null ){
+						var noAnt = ob.getByQry(pref+"#"+NO_ant)[0];
+						// Como o nó anterior pode ter sido deletado por delItem(),
+						// temos que testar sua nulidade
+						if( noAnt != null) {
+							noAnt.style.color = "teal";
+							}
+						}
+					//NO_ATUAL.value = o.id;
+					NO_ant = NO_ATUAL.value;
+					// Seja LI, seja SPAN, o innerText contém o label do nó (seu nome)
+					nome = o.innerText; 
+					(ob.getById("noNome")).value = nome;
+					o.style.color = "red";
+					// Buscar a anotação do nó clicado (CASEXISTA)
+					var oTxt = ob.getById("txtContainer");
+					var id = NO_ATUAL.value;
+					var txt = (ob.getById("tMain")).value;
+					var idTxt = "t"+id;
+					var NO_TXT = ob.getById(idTxt);
+					var obTxt = null;
+					// Testa se o nó ainda não existe
+					if( NO_TXT != null ){
+						(ob.getById("tMain")).value = NO_TXT.value;
+						} else {
+						(ob.getById("tMain")).value = "";
+						}
+					}
+				}
+			// Deleta o nó atual
+			function delItem(){
+				// Traz o campo de INPUT que contém o nome de um nodo HTML
+				NO_ATUAL = ob.getById("noAtual");
+				// Traz o valor do campo de INPUT que contém o nome de um nodo HTML
+				var noEfet = NO_ATUAL.value;
+				var no2del = ob.getById(noEfet);
+				var pref = null;
+
+				if( no2del.tagName == "IMG" || no2del.tagName == "SPAN" ){
+					pref = "UL";
+					}
+
+				// Verifica se é um nó UL ou LI
+				if( ob.getByQry("UL#"+NO_ant)[0] != null ){
+					pref = "UL";
+					}
+				if( ob.getByQry("LI#"+NO_ant)[0] != null ){
+					pref = "LI";
+					}
+				if( ob.getByQry(pref+"#"+noEfet)[0] != null ){
+					(ob.getByQry(pref+"#"+noEfet)[0]).remove();
+					NO_ATUAL.value = "";
+					( ob.getById("noNome") ).value = "";
+					} else {
+					alert("Nó ainda não tem definição de sublista (UL). Acrescente um nó.");
+					}
+				}
+			function markDiv(){
+				ob.getById("Raiz").click();
+				}
+
+			function saveTxt(){
+				var oTxt = ob.getById("txtContainer");
+				var id = NO_ATUAL.value;
+				var txt = (ob.getById("tMain")).value;
+				var idTxt = "t"+id;
+				// Obtem o id do TEXTAREA em questão (pode ou não existir)
+				var NO_TXT = ob.getById(idTxt);
+				var obTxt = null;
+				console.log(txt);
+				console.log(id);
+				// Testa se o nó ainda não existe
+				if( NO_TXT == null ){
+					obTxt = document.createElement("TEXTAREA");
+					obTxt.id = idTxt;
+					//obTxt.value = txt; // RETIRADO
+					var noTexto = document.createTextNode(txt);
+					obTxt.appendChild(noTexto);
+					obTxt.setAttribute("contenteditable","true");
+					oTxt.appendChild(obTxt);
+					} else {
+					// Alterado: era NO_TXT.value
+					NO_TXT.innerText = txt;
+					}
+				}
+			// Encode caracteres "/"
+			function encoda(txt){
+				//txt = txt.replace(/\//g, "#");
+				return txt;
+				}
+			// Salva lista
+			function saveLista(){
+				var NomeLista = (ob.getById("NomeLista")).value;
+				var Arvore = (ob.getById("Raiz")).innerHTML;
+				Arvore = Arvore.replace(/\n/g, "");
+				Arvore = Arvore.replace(/\t/g, "");
+				Arvore = Arvore.replace(/\r/g, "");
+				var Html = (ob.getById("txtContainer")).innerHTML;
+				Html = Html.replace(/\n/g, "");
+				Html = Html.replace(/\t/g, "");
+				Html = Html.replace(/\r/g, "");
+				// encode
+				var txtUrl = "CRUD_add.php";
+				txtUrl += "?";
+				txtUrl += "NomeLista=" + NomeLista;
+				txtUrl += "&";
+				txtUrl += "Arvore=" + encoda(Arvore);
+				txtUrl += "&";
+				txtUrl += "Html=" + encoda(Html);
+				// Chama fetch
+				window.location = txtUrl;
+				}
+			// Carrega a lista
+			function loadLista(){
+				// Etapa 1 - Obtenção e construção dos parâmetros necessários
+				var NomeLista = (ob.getById("NomeLista")).value;
+				alert("Lista: "+NomeLista);
+				var txtUrl = "CRUD_sele.php?NomeLista="+NomeLista;
+				alert("URL: "+txtUrl);
+				// Etapa 2 - Preparação para o fetch
+				// Opções para fetch
+				const options = {
+					method: 'post',
+					headers: {
+						'Content-type': headerISO
+						}
+					}
+				// Etapa 3 - Fetch
+				fetch(txtUrl,options)
+				  .then( function(response){
+						if (!response.ok) { throw response }
+						return response.json()  //we only get here if there is no error
+					  })
+					.then(function (result) {
+						if( result[0].Id == "EXISTE" ){
+							console.log("Registro Existente");
+							// NOVO - Carrega no corpo do HTML, nos locais determinados
+							(ob.getById("Raiz")).innerHTML = result[3].Arvore;
+							(ob.getById("txtContainer")).innerHTML = result[2].Html;
+							}
+						})
+					.catch(function() {
+						console.log("Error");
+						alert('Registro não EXISTE');
+						return;
+						});				
+				
+				
+				}
+			// Função de Início
+			function init(){
+				ob = new BMy();
+				NO_ATUAL = ob.getById("noAtual");
+				//console.log(ob.isNumeric("12345"));
+				}
+		</script>
+	</head>
+	<body onload="init();">
+		<h1>LISTA DE TAREFAS</h1>
+		<!-- Barra de ferramentas -->
+		<input id="AcrNo" name="AcrNo" type="button" value="Acresc.nó" onclick="addNo();">&nbsp;
+		<label>Nome novo ITEM:</label><input id="nomItem" name="nomItem" value="Item " size=8>
+		<input id="AcrItem" name="AcrItem" type="button" value="Acresc.Item" onclick="addItem();">
+		<label>Nó atual:</label><input id="noAtual" name="noAtual" value="Raiz" size=8>
+		<label>Nome:</label><input id="noNome" name="noNome" value="Raiz" size=8>
+		<input id="DelItem" name="DelItem" type="button" value="Deleta Item" onclick="delItem();">
+		<!-- ********* Lista de tarefas ********* -->
+		<p>&nbsp;</p>
+		<table cellspacing=0 cellpadding=4>
+			<tr>
+				<td>
+					<label>Nome da Lista:</label>
+					<input id="NomeLista" type="text">
+					<input type="button" onclick="saveLista();" value="Grava Lista">
+					<!-- NOVO -->
+					<input type="button" onclick="loadLista();" value="Carrega Lista">
+				</td>
+			</tr>
+			<tr>
+				<td width="45%" valign=top>
+					<div class="Raiz"onclick="markDiv();">&nbsp;Raiz&nbsp;</div>
+					<ul id="Raiz" onclick="mark(event);">
+					
+					</ul>
+				</td>
+				<td>
+					<textarea id="tMain" cols=60 rows=8>
+					</textarea><br><input type="button" onclick="saveTxt();" value="Grava Nota">
+				</td>
+			</tr>
+
+		</table>
+		<div id="txtContainer">
+			
+		</div>
+	</body>
+</html>
